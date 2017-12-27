@@ -1,5 +1,5 @@
 # coding: utf-8
-import cv2
+#import cv2
 import keras
 from keras.applications.imagenet_utils import preprocess_input
 from keras.backend.tensorflow_backend import set_session

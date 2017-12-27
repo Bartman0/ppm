@@ -11,6 +11,7 @@ from iothub_client import IoTHubClient, IoTHubClientError, IoTHubTransportProvid
 from iothub_client import IoTHubMessage, IoTHubMessageDispositionResult, IoTHubError, DeviceMethodReturnValue
 import config as config
 from PPMSimulator import PPMSimulator
+from PPM import PPM
 import re
 from telemetry import Telemetry
 
@@ -34,7 +35,7 @@ MESSAGE_SWITCH = True
 TWIN_CONTEXT = 0
 SEND_REPORTED_STATE_CONTEXT = 0
 METHOD_CONTEXT = 0
-TEMPERATURE_ALERT = 5
+CARS_ALERT = 5
 
 # global counters
 RECEIVE_CALLBACKS = 0
@@ -73,9 +74,6 @@ if not is_correct_connection_string():
     sys.exit(0)
 
 MSG_TXT = "{\"deviceId\": \"Parkeerplaatsmeter\",\"cars\": %d}"
-
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(config.GPIO_PIN_ADDRESS, GPIO.OUT)
 
 def receive_message_callback(message, counter):
     global RECEIVE_CALLBACKS
@@ -230,9 +228,10 @@ def iothub_client_app_run():
     print_last_message_time(client)
 
 def led_blink():
-    GPIO.output(config.GPIO_PIN_ADDRESS, GPIO.HIGH)
-    time.sleep(config.BLINK_TIMESPAN / 1000.0)
-    GPIO.output(config.GPIO_PIN_ADDRESS, GPIO.LOW)
+    pass
+    #GPIO.output(config.GPIO_PIN_ADDRESS, GPIO.HIGH)
+    #time.sleep(config.BLINK_TIMESPAN / 1000.0)
+    #GPIO.output(config.GPIO_PIN_ADDRESS, GPIO.LOW)
 
 def usage():
     print ( "Usage: app.py -p <protocol> -c <connectionstring>" )
