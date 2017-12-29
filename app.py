@@ -47,6 +47,9 @@ METHOD_CALLBACKS = 0
 EVENT_SUCCESS = "success"
 EVENT_FAILED = "failed"
 
+# cars response value
+CARS_COUNT = 0
+
 # chose HTTP, AMQP or MQTT as transport protocol
 PROTOCOL = IoTHubTransportProvider.MQTT
 
@@ -118,7 +121,7 @@ def send_reported_state_callback(status_code, user_context):
 
 
 def device_method_callback(method_name, payload, user_context):
-    global METHOD_CALLBACKS,MESSAGE_SWITCH
+    global METHOD_CALLBACKS,MESSAGE_SWITCH,CARS_COUNT
     print ( "\nMethod callback called with:\nmethodName = %s\npayload = %s\ncontext = %s" % (method_name, payload, user_context) )
     METHOD_CALLBACKS += 1
     print ( "Total calls confirmed: %d\n" % METHOD_CALLBACKS )
@@ -133,7 +136,11 @@ def device_method_callback(method_name, payload, user_context):
     if method_name == "stop":
         MESSAGE_SWITCH = False
         print ( "Stop sending message\n" )
-        device_method_return_value.response = "{ \"Response\": \"Successfully stopped\" }"
+        device_method_return_value.response = "{ \"Response\": %d }" % CARS_COUNT
+        return device_method_return_value
+    if method_name == "cars":
+        print ( "Readings cars\n" )
+        device_method_return_value.response = "{ \"Response\": CARS_COUNT }"
         return device_method_return_value
     return device_method_return_value
 
@@ -195,12 +202,12 @@ def iothub_client_app_run():
 
         telemetry.send_telemetry_data(parse_iot_hub_name(), EVENT_SUCCESS, "IoT hub connection is established")
         while True:
-            global MESSAGE_COUNT,MESSAGE_SWITCH
+            global MESSAGE_COUNT,MESSAGE_SWITCH,CARS_COUNT
             if MESSAGE_SWITCH:
                 # send a few messages every minute
                 print ( "IoTHubClient sending %d messages" % MESSAGE_COUNT )
-                cars = sensor.read_cars()
-                msg_txt_formatted = MSG_TXT % (cars)
+                CARS_COUNT = sensor.read_cars()
+                msg_txt_formatted = MSG_TXT % (CARS_COUNT)
                 print (msg_txt_formatted)
                 message = IoTHubMessage(msg_txt_formatted)
                 # optional: assign ids
@@ -208,7 +215,7 @@ def iothub_client_app_run():
                 message.correlation_id = "correlation_%d" % MESSAGE_COUNT
                 # optional: assign properties
                 prop_map = message.properties()
-                prop_map.add("carAlert", "true" if cars > CARS_ALERT else "false")
+                prop_map.add("carAlert", "true" if CARS_COUNT > CARS_ALERT else "false")
 
                 client.send_event_async(message, send_confirmation_callback, MESSAGE_COUNT)
                 print ( "IoTHubClient.send_event_async accepted message [%d] for transmission to IoT Hub." % MESSAGE_COUNT )

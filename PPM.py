@@ -83,6 +83,7 @@ class PPM:
             score = top_conf[i]
             label = int(top_label_indices[i])
             label_name = self.voc_classes[label - 1]
+            print('Label: '+label_name)
             if label_name == 'car':
                 cars += 1
             display_txt = '{:0.2f}, {}'.format(score, label_name)
