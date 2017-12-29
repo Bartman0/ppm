@@ -136,11 +136,11 @@ def device_method_callback(method_name, payload, user_context):
     if method_name == "stop":
         MESSAGE_SWITCH = False
         print ( "Stop sending message\n" )
-        device_method_return_value.response = "{ \"Response\": %d }" % CARS_COUNT
+        device_method_return_value.response = "{ \"Response\": \"Successfully stopped\" }"
         return device_method_return_value
     if method_name == "cars":
         print ( "Readings cars\n" )
-        device_method_return_value.response = "{ \"Response\": CARS_COUNT }"
+        device_method_return_value.response = "{ \"Response\": %d }" % CARS_COUNT
         return device_method_return_value
     return device_method_return_value
 
