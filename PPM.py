@@ -51,6 +51,8 @@ class PPM:
         preds = self.model.predict(inputs, batch_size=1, verbose=0)
 
         results = self.bbox_util.detection_out(preds)
+        if results == None:
+            return 0
 
         i = 0
         img = images[0]
