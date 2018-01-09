@@ -51,7 +51,7 @@ class PPM:
         preds = self.model.predict(inputs, batch_size=1, verbose=0)
 
         results = self.bbox_util.detection_out(preds)
-        if results == None:
+        if results == None or len(results[0]) == 0:
             return 0
 
         i = 0
